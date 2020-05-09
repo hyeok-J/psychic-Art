@@ -1,0 +1,12 @@
+#!/bin/bash
+
+SrtTime=`date '+%Y/%m/%d:%H' -d "-1 hours"`
+EndTime=`date "+%Y/%m/%d:%H"`
+
+addr="255.255.255.255/1"
+properties="SiLK.properties"
+properties="sample.properties"
+
+rwfilter --start-date=$SrtTime --end-date=$EndTime --any-address=$addr --pass=stdout --type=all |\
+rwcut --fields=sip,dip --no-titles -delimited=, | sort -u |\
+perl afterglow.pl -e 5 -c $properties | neato -Tgif -o glowChart.gif
