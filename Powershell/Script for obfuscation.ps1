@@ -2,7 +2,7 @@
 .SYNOPSIS
     .
 .DESCRIPTION
-    This program makes your string obfuscation
+    This script makes your string obfuscation
     You can using it to macro in excel but it can be blocked powershell, so you can run using cmd like below.
     
     Private Sub Workbook_Open()
